@@ -40,10 +40,6 @@ adc_unit_t vt_adc_controller_sensor_2 = ADC_UNIT_1;
 uint32_t vt_adc_channel_sensor_1 = ADC1_CHANNEL_4;
 uint32_t vt_adc_channel_sensor_2 = ADC1_CHANNEL_5;
 
-/* GPIO Definitions */
-//uint16_t vt_gpio_id_sensor_1 = SAMPLE_INTERNAL_GPIO_TYPE_ID;
-//uint16_t vt_gpio_id_sensor_2 = SAMPLE_INTERNAL_GPIO_TYPE_ID;
-
 uint16_t* vt_gpio_port_sensor_1;
 uint16_t* vt_gpio_port_sensor_2;
 
