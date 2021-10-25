@@ -4,6 +4,7 @@
 #include "driver/adc.h"
 #include "esp_adc_cal.h"//cant seem to find #include "esp_adc_cal.h"
 #include "driver/timer.h"
+#include "mcp320x.h"
 
 #define TIMER_DIVIDER         (80)  //  Hardware timer clock divider
 #define TIMER_SCALE           (TIMER_BASE_CLK / TIMER_DIVIDER)  // convert counter value to seconds
@@ -14,6 +15,33 @@
         
 #define SAMPLE_INTERNAL_ADC_TYPE_ID  0x01
 #define SAMPLE_INTERNAL_GPIO_TYPE_ID 0x01
+
+/*
+#define GPIO_CS GPIO_NUM_15
+#define GPIO_SCLK GPIO_NUM_14
+#define GPIO_MISO GPIO_NUM_12
+#define GPIO_MOSI GPIO_NUM_13
+
+    spi_bus_config_t bus_cfg = {
+        .mosi_io_num = GPIO_MOSI,
+        .miso_io_num = GPIO_MISO,
+        .sclk_io_num = GPIO_SCLK,
+        .quadwp_io_num = -1,
+        .quadhd_io_num = -1,
+        .max_transfer_sz = 0,
+        //.flags = SPICOMMON_BUSFLAG_MASTER
+        };
+
+    mcp320x_config_t mcp320x_cfg = {
+        .host = SPI2_HOST,
+        .device_model = MCP3204_MODEL,
+        .clock_speed_hz = 1 * 1000 * 1000, // 1 Mhz.
+        .reference_voltage = 5000,         // 5V
+        .cs_io_num = GPIO_CS};
+
+    mcp320x_handle_t mcp320x_handle;
+*/
+
 
 static esp_adc_cal_characteristics_t adc_chars;
 
@@ -105,7 +133,11 @@ uint16_t vt_adc_single_read_init(
 
         *adc_resolution = 12;
         *adc_ref_volt   = 3.6f;
-        
+    //ESP_ERROR_CHECK(spi_bus_free(SPI2_HOST));
+    //ESP_ERROR_CHECK(spi_bus_add_device(mcp320x_cfg.host,));
+    //ESP_ERROR_CHECK(spi_bus_initialize(mcp320x_cfg.host, &bus_cfg, 0));
+    //ESP_ERROR_CHECK(mcp320x_initialize(&mcp320x_cfg, &mcp320x_handle));
+
 
     return 0;
 
@@ -128,6 +160,7 @@ uint16_t vt_adc_single_read(uint16_t adc_id, void* adc_controller, void* adc_cha
         adc2_get_raw(channel, width, &adc_raw);
     }
     //adc_raw_abs=abs(adc_raw-4095);
+
     return (uint16_t)adc_raw;
 }
 
@@ -145,6 +178,18 @@ uint16_t vt_gpio_on(uint16_t gpio_id, void* gpio_port, void* gpio_pin)
     gpio_set_pull_mode(ADC_GPIO_NUM,GPIO_FLOATING);
 
     gpio_set_level(*((uint16_t*)gpio_pin), 1);
+
+        //unsigned short raw;
+        //unsigned short voltage;
+
+        //ESP_ERROR_CHECK(mcp320x_read_raw(mcp320x_handle, MCP320X_CHANNEL_0, MCP320X_READ_MODE_SINGLE, &raw));
+        //ESP_ERROR_CHECK(mcp320x_read_voltage(mcp320x_handle, MCP320X_CHANNEL_0, MCP320X_READ_MODE_SINGLE, &voltage));
+
+        //ESP_LOGI("mcp320x", "Raw: %d", raw);
+        //ESP_LOGI("mcp320x", "Voltage: %d mV", voltage);
+        //printf("Raw: %d \n", raw);
+        //printf("Voltage: %d mV \n", voltage);
+
     return 0;
 
 }

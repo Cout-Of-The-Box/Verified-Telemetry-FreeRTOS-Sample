@@ -18,6 +18,37 @@
 #include "freertos/task.h"
 #include "freertos/semphr.h"
 #include "nvs_flash.h"
+#include "mcp320x.h"
+
+
+/*
+#define GPIO_CS GPIO_NUM_15
+#define GPIO_SCLK GPIO_NUM_14
+#define GPIO_MISO GPIO_NUM_12
+#define GPIO_MOSI GPIO_NUM_13
+
+    spi_bus_config_t bus_cfg = {
+        .mosi_io_num = GPIO_MOSI,
+        .miso_io_num = GPIO_MISO,
+        .sclk_io_num = GPIO_SCLK,
+        .quadwp_io_num = -1,
+        .quadhd_io_num = -1,
+        .max_transfer_sz = 0,
+        //.flags = SPICOMMON_BUSFLAG_MASTER
+        };
+
+    mcp320x_config_t mcp320x_cfg = {
+        .host = SPI2_HOST,
+        .device_model = MCP3204_MODEL,
+        .clock_speed_hz = 1 * 1000 * 1000, // 1 Mhz.
+        .reference_voltage = 5000,         // 5V
+        .cs_io_num = GPIO_CS};
+
+    extern mcp320x_handle_t mcp320x_handle;
+*/
+
+
+
 /*-----------------------------------------------------------*/
 
 #define NR_OF_IP_ADDRESSES_TO_WAIT_FOR 1
@@ -274,6 +305,10 @@ void app_main(void)
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     //Allow other core to finish initialization
     vTaskDelay(pdMS_TO_TICKS(100));
+
+    //ESP_ERROR_CHECK(spi_bus_initialize(mcp320x_cfg.host, &bus_cfg, 0));
+    //ESP_ERROR_CHECK(mcp320x_initialize(&mcp320x_cfg, &mcp320x_handle));
+    //printf("\n spi_bus_initialize && mcp320x_initialize \n");
 
     (void)example_connect();
 
