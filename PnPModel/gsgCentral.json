@@ -38,6 +38,24 @@
         },
         "name": "vTsoilMoistureExternal2",
         "schema": "dtmi:azure:verifiedtelemetry:telemetryinformation;1"
+      },
+      {
+        "@id": "dtmi:azure:verifiedtelemetry:sample:GSG:vTsoilMoistureExternal2;1",
+        "@type": "Component",
+        "displayName": {
+          "en": "Verified Telemetry component for soilMoistureExternal2 telemetry"
+        },
+        "name": "vTPMSExternal1",
+        "schema": "dtmi:azure:verifiedtelemetry:telemetryinformation;1"
+      },
+      {
+        "@id": "dtmi:azure:verifiedtelemetry:sample:GSG:vTsoilMoistureExternal2;1",
+        "@type": "Component",
+        "displayName": {
+          "en": "Verified Telemetry component for soilMoistureExternal2 telemetry"
+        },
+        "name": "vTtemperatureExternal2",
+        "schema": "dtmi:azure:verifiedtelemetry:telemetryinformation;1"
       }
     ],
     "description": {
@@ -73,6 +91,22 @@
           "en": "Soil Moisture External 2"
         },
         "name": "soilMoistureExternal2",
+        "schema": "float"
+      },
+      {
+        "@type": "Telemetry",
+        "displayName": {
+          "en": "PMS External 1"
+        },
+        "name": "PMSExternal1",
+        "schema": "float"
+      },
+      {
+        "@type": "Telemetry",
+        "displayName": {
+          "en": "Temperature External 2"
+        },
+        "name": "temperatureExternal2",
         "schema": "float"
       },
       {
