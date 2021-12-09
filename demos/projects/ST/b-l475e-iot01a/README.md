@@ -88,20 +88,18 @@ Confirm that you have Copied the the following values from your Iot Hub and the 
 This sample showcases Verified Telemetry feature for telemetry generated from two external sensors that are connected to STM DevKit
 * Connect Sensors        
 
+    Refer to the table and image below to connect the PM2012 with the STM Devkit Baseboard PCB Pin.
 
-    Refer to the table and image below to connect the two [Soil Moisture](https://www.dfrobot.com/product-1385.html) sensors.
-
-    | Sensor Name   | Sensor Pin           | MCU Pin | Devkit Pin |
+    | Sensor Name   | Sensor Pin           | MCU Pin | STM Devkit Baseboard PCB Pin |
     |---------------|----------------------|-----------------------------|------------|
-    | Soil Moisture 1 | Analog Out           | PC0                           | A5        |
-    | Soil Moisture 1 | VCC                  | PB9                          | D14        |
-    | Soil Moisture 1 | GND                  | GND                          | GND        |
-    | Soil Moisture 2       | Analog Out  | PC1                           | A4        |
-    | Soil Moisture 2       | VCC                  | PB8                           | D15       |
-    | Soil Moisture 2       | GND                  | GND                           | GND       |
+    | PM2012 | Sensor’s TX (PIN 7)           | RX                           | RX        |
+    | PM2012 | Sensor’s RX (PIN 9)                  | TX                          | TX        |
+    | PM2012 | VCC (PIN 1)                  | VCC                          | VCC        |
+    | PM2012       | GND (PIN 3)  | GND                           | GND        |
 
 
-    ![B-L475E-IOT01A Sensor Connections](media/B-L475E-IOT01A_sensor_connections.png)
+
+    ![B-L475E-IOT01A Sensor Connections](media/PM2012_connection.png)
 
 
 ## Prepare the device
@@ -130,6 +128,9 @@ To build the device image, navigate to the `Verified-Telemetry-FreeRTOS-Sample` 
 
   ```bash
     cmake -G Ninja -DVENDOR=ST -DBOARD=b-l475e-iot01a -Bb-l475e-iot01a .
+  ```
+  
+  ```bash
     cmake --build b-l475e-iot01a
   ```
 
