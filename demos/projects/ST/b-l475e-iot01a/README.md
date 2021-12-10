@@ -37,7 +37,7 @@ You will complete the following tasks:
     >   * [B-L475E-IOT01A](https://www.st.com/en/evaluation-tools/b-l475e-iot01a.html)
     > * Wi-Fi 2.4 GHz
     > * USB 2.0 A male to Micro USB male cable
-    > * 2 * [Soil Moisture Sensor](https://www.dfrobot.com/product-1385.html)
+    > * 1 * PM2012 Sensor
 
 
 ## Prepare the development environment
@@ -130,6 +130,181 @@ To build the device image, navigate to the `Verified-Telemetry-FreeRTOS-Sample` 
     cmake -G Ninja -DVENDOR=ST -DBOARD=b-l475e-iot01a -Bb-l475e-iot01a .
   ```
   
+Following changes are required in library files.
+
+1. stm32l4s5i_iot01.c (Verified-Telemetry-FreeRTOS-Sample\b-l475e-iot01a\_deps\stm32cubel4-src\Drivers\BSP\B-L4S5I-IOT01\stm32l4s5i_iot01.c)
+
+      * Add following lines under line 82 in above file.
+          ```bash
+            USART_TypeDef* COM2_USART[COMn] = {DISCOVERY_COM2};
+
+            GPIO_TypeDef* COM2_TX_PORT[COMn] = {DISCOVERY_COM2_TX_GPIO_PORT};
+
+            GPIO_TypeDef* COM2_RX_PORT[COMn] = {DISCOVERY_COM2_RX_GPIO_PORT};
+
+            const uint16_t COM2_TX_PIN[COMn] = {DISCOVERY_COM2_TX_PIN};
+
+            const uint16_t COM2_RX_PIN[COMn] = {DISCOVERY_COM2_RX_PIN};
+
+            const uint16_t COM2_TX_AF[COMn] = {DISCOVERY_COM2_TX_AF};
+
+            const uint16_t COM2_RX_AF[COMn] = {DISCOVERY_COM2_RX_AF};
+          ```
+
+      * Add following lines under line 312 in above file.
+          ```bash
+            void BSP_COM2_Init(COM_TypeDef COM, UART_HandleTypeDef *huart)
+            {
+              GPIO_InitTypeDef gpio_init_structure;
+
+              /* Enable GPIO clock */
+              DISCOVERY_COMy_TX_GPIO_CLK_ENABLE(COM);
+              DISCOVERY_COMy_RX_GPIO_CLK_ENABLE(COM);
+
+              /* Enable USART clock */
+              DISCOVERY_COMy_CLK_ENABLE(COM);
+
+              /* Configure USART Tx as alternate function */
+              gpio_init_structure.Pin = COM2_TX_PIN[COM];
+              gpio_init_structure.Mode = GPIO_MODE_AF_PP;
+              gpio_init_structure.Speed = GPIO_SPEED_FREQ_HIGH;
+              gpio_init_structure.Pull = GPIO_NOPULL;
+              gpio_init_structure.Alternate = COM2_TX_AF[COM];
+              HAL_GPIO_Init(COM2_TX_PORT[COM], &gpio_init_structure);
+
+              /* Configure USART Rx as alternate function */
+              gpio_init_structure.Pin = COM2_RX_PIN[COM];
+              gpio_init_structure.Mode = GPIO_MODE_AF_PP;
+              gpio_init_structure.Alternate = COM2_RX_AF[COM];
+              HAL_GPIO_Init(COM2_RX_PORT[COM], &gpio_init_structure);
+
+              /* USART configuration */
+              huart->Instance = COM2_USART[COM];
+              HAL_UART_Init(huart);
+            }
+          ```
+
+2. stm32l4s5i_iot01.h (Verified-Telemetry-FreeRTOS-Sample\b-l475e-iot01a\_deps\stm32cubel4-src\Drivers\BSP\B-L4S5I-IOT01\stm32l4s5i_iot01.h)
+
+      * Add following lines under line 152 in above file.
+          ```bash
+            #define DISCOVERY_COM2                          UART4
+            #define DISCOVERY_COM2_CLK_ENABLE()             __HAL_RCC_UART4_CLK_ENABLE()
+            #define DISCOVERY_COM2_CLK_DISABLE()            __HAL_RCC_UART4_CLK_DISABLE()
+
+            #define DISCOVERY_COM2_TX_PIN                   GPIO_PIN_0
+            #define DISCOVERY_COM2_TX_GPIO_PORT             GPIOA
+            #define DISCOVERY_COM2_TX_GPIO_CLK_ENABLE()     __HAL_RCC_GPIOA_CLK_ENABLE()   
+            #define DISCOVERY_COM2_TX_GPIO_CLK_DISABLE()    __HAL_RCC_GPIOA_CLK_DISABLE()  
+            #define DISCOVERY_COM2_TX_AF                    GPIO_AF8_UART4
+
+            #define DISCOVERY_COM2_RX_PIN                   GPIO_PIN_1
+            #define DISCOVERY_COM2_RX_GPIO_PORT             GPIOA
+            #define DISCOVERY_COM2_RX_GPIO_CLK_ENABLE()     __HAL_RCC_GPIOA_CLK_ENABLE()   
+            #define DISCOVERY_COM2_RX_GPIO_CLK_DISABLE()    __HAL_RCC_GPIOA_CLK_DISABLE()  
+            #define DISCOVERY_COM2_RX_AF                    GPIO_AF8_UART4
+
+            #define DISCOVERY_COM2_IRQn                     UART4_IRQn
+
+            #define DISCOVERY_COMy_CLK_ENABLE(__INDEX__)            do { if((__INDEX__) == COM2) {DISCOVERY_COM2_CLK_ENABLE();}} while(0)
+            #define DISCOVERY_COMy_CLK_DISABLE(__INDEX__)           do { if((__INDEX__) == COM2) {DISCOVERY_COM2_CLK_DISABLE();}} while(0)
+
+            #define DISCOVERY_COMy_TX_GPIO_CLK_ENABLE(__INDEX__)    do { if((__INDEX__) == COM2) {DISCOVERY_COM2_TX_GPIO_CLK_ENABLE();}} while(0)
+            #define DISCOVERY_COMy_TX_GPIO_CLK_DISABLE(__INDEX__)   do { if((__INDEX__) == COM2) {DISCOVERY_COM2_TX_GPIO_CLK_DISABLE();}} while(0)
+
+            #define DISCOVERY_COMy_RX_GPIO_CLK_ENABLE(__INDEX__)    do { if((__INDEX__) == COM2) {DISCOVERY_COM2_RX_GPIO_CLK_ENABLE();}} while(0)
+            #define DISCOVERY_COMy_RX_GPIO_CLK_DISABLE(__INDEX__)   do { if((__INDEX__) == COM2) {DISCOVERY_COM2_RX_GPIO_CLK_DISABLE();}} while(0)
+          ```
+
+3. stm32l4xx_hal_uart.c (Verified-Telemetry-FreeRTOS-Sample\b-l475e-iot01a\_deps\stm32cubel4-src\Drivers\STM32L4xx_HAL_Driver\Src\stm32l4xx_hal_uart.c)
+
+      * Add following lines under line 1215 in above file.
+          ```bash
+            HAL_StatusTypeDef HAL_UART4_Receive(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size, uint32_t Timeout)
+            { 
+
+            uint8_t  *pdata8bits;
+              uint16_t *pdata16bits;
+              uint16_t uhMask;
+              uint32_t tickstart;
+
+              /* Check that a Rx process is not already ongoing */
+              if (huart->RxState == HAL_UART_STATE_READY)
+              {
+                if ((pData == NULL) || (Size == 0U))
+                {
+                  return  HAL_ERROR;
+                }
+
+                __HAL_LOCK(huart);
+
+                huart->ErrorCode = HAL_UART_ERROR_NONE;
+                huart->RxState = HAL_UART_STATE_BUSY_RX;
+
+                /* Init tickstart for timeout managment*/
+                tickstart = HAL_GetTick();
+
+                huart->RxXferSize  = Size;
+                huart->RxXferCount = Size;
+
+                /* Computation of UART mask to apply to RDR register */
+                UART_MASK_COMPUTATION(huart);
+                uhMask = huart->Mask;
+
+                /* In case of 9bits/No Parity transfer, pRxData needs to be handled as a uint16_t pointer */
+                if ((huart->Init.WordLength == UART_WORDLENGTH_9B) && (huart->Init.Parity == UART_PARITY_NONE))
+                {
+                  pdata8bits  = NULL;
+                  pdata16bits = (uint16_t *) pData;
+                }
+                else
+                {
+                  pdata8bits  = pData;
+                  pdata16bits = NULL;
+                }
+
+                __HAL_UNLOCK(huart);
+
+                /* as long as data have to be received */
+                while (huart->RxXferCount > 0U)
+                {
+                  if (UART_WaitOnFlagUntilTimeout(huart, UART_FLAG_RXNE, RESET, tickstart, Timeout) != HAL_OK)
+                  {
+                    return HAL_TIMEOUT;
+                  }
+                  if (pdata8bits == NULL)
+                  {
+                    *pdata16bits = (uint16_t)(huart->Instance->RDR & uhMask);
+                    pdata16bits++;
+                  }
+                  else
+                  {
+                    *pdata8bits = (uint8_t)(huart->Instance->RDR & (uint8_t)uhMask);
+                    pdata8bits++;
+                  }
+                  __HAL_UART_CLEAR_FLAG(huart, UART_CLEAR_NEF | UART_CLEAR_OREF);
+                  huart->RxXferCount--;
+                }
+
+                /* At end of Rx process, restore huart->RxState to Ready */
+                huart->RxState = HAL_UART_STATE_READY;
+
+                return HAL_OK;
+              }
+              else
+              {
+                return HAL_BUSY;
+              }
+            }
+          ```
+
+4. stm32l4xx_hal_uart.h (Verified-Telemetry-FreeRTOS-Sample\b-l475e-iot01a\_deps\stm32cubel4-src\Drivers\STM32L4xx_HAL_Driver\Inc\stm32l4xx_hal_uart.h)
+
+      * Add following lines under line 1617 in above file.
+          ```bash
+            HAL_StatusTypeDef HAL_UART_Receive(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size, uint32_t Timeout);
+          ```
+
   ```bash
     cmake --build b-l475e-iot01a
   ```
