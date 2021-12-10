@@ -302,7 +302,7 @@ Following changes are required in library files.
 
       * Add following lines under line 1617 in above file.
           ```bash
-            HAL_StatusTypeDef HAL_UART_Receive(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size, uint32_t Timeout);
+            HAL_StatusTypeDef HAL_UART_Receive4(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size, uint32_t Timeout);
           ```
 
   ```bash
