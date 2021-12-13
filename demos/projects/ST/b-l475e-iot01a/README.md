@@ -88,18 +88,23 @@ Confirm that you have Copied the the following values from your Iot Hub and the 
 This sample showcases Verified Telemetry feature for telemetry generated from two external sensors that are connected to STM DevKit
 * Connect Sensors        
 
-    Refer to the table and image below to connect the PM2012 with the STM Devkit Baseboard PCB Pin.
+    Refer to the table and image below to connect the Cubic PM2012 Sensor with the STM Devkit Baseboard PCB Pin.
 
     | Sensor Name   | Sensor Pin           | MCU Pin | STM Devkit Baseboard PCB Pin |
     |---------------|----------------------|-----------------------------|------------|
-    | PM2012 | Sensor’s TX (PIN 7)           | RX                           | RX        |
-    | PM2012 | Sensor’s RX (PIN 9)                  | TX                          | TX        |
-    | PM2012 | VCC (PIN 1)                  | VCC                          | VCC        |
-    | PM2012       | GND (PIN 3)  | GND                           | GND        |
+    | Cubic PM2012 | Sensor’s TX (PIN 7)           | RX                           | RX        |
+    | Cubic PM2012 | Sensor’s RX (PIN 9)                  | TX                          | TX        |
+    | Cubic PM2012 | VCC (PIN 1)                  | VCC                          | VCC        |
+    | Cubic PM2012       | GND (PIN 3)  | GND                           | GND        |
 
 
-
+    * Connection Schematic
     ![B-L475E-IOT01A Sensor Connections](media/PM2012_connection.png)
+    * CS PCB Connections
+    ![B-L475E-IOT01A-labeled](media/labeled.jpeg)
+    * Sample Setup
+    ![B-L475E-IOT01A Sensor Connections_photo](media/connections.jpeg)
+
 
 
 ## Prepare the device
@@ -134,7 +139,7 @@ Following changes are required in library files.
 
 1. stm32l4s5i_iot01.c (Verified-Telemetry-FreeRTOS-Sample\b-l475e-iot01a\_deps\stm32cubel4-src\Drivers\BSP\B-L4S5I-IOT01\stm32l4s5i_iot01.c)
 
-      * Add following lines under line 82 in above file.
+      * Add following lines under line 82 in above file, values required for COM2 Port Initialization.
           ```bash
             USART_TypeDef* COM2_USART[COMn] = {DISCOVERY_COM2};
 
@@ -151,7 +156,7 @@ Following changes are required in library files.
             const uint16_t COM2_RX_AF[COMn] = {DISCOVERY_COM2_RX_AF};
           ```
 
-      * Add following lines under line 312 in above file.
+      * Add following lines under line 312 in above file, COM2 Port Initialization Function.
           ```bash
             void BSP_COM2_Init(COM_TypeDef COM, UART_HandleTypeDef *huart)
             {
@@ -186,7 +191,7 @@ Following changes are required in library files.
 
 2. stm32l4s5i_iot01.h (Verified-Telemetry-FreeRTOS-Sample\b-l475e-iot01a\_deps\stm32cubel4-src\Drivers\BSP\B-L4S5I-IOT01\stm32l4s5i_iot01.h)
 
-      * Add following lines under line 152 in above file.
+      * Add following lines under line 152 in above file, various defines for COM2 Port.
           ```bash
             #define DISCOVERY_COM2                          UART4
             #define DISCOVERY_COM2_CLK_ENABLE()             __HAL_RCC_UART4_CLK_ENABLE()
@@ -218,7 +223,7 @@ Following changes are required in library files.
 
 3. stm32l4xx_hal_uart.c (Verified-Telemetry-FreeRTOS-Sample\b-l475e-iot01a\_deps\stm32cubel4-src\Drivers\STM32L4xx_HAL_Driver\Src\stm32l4xx_hal_uart.c)
 
-      * Add following lines under line 1215 in above file.
+      * Add following lines under line 1215 in above file, UART4 receiving function definition.
           ```bash
             HAL_StatusTypeDef HAL_UART4_Receive(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size, uint32_t Timeout)
             { 
@@ -300,7 +305,7 @@ Following changes are required in library files.
 
 4. stm32l4xx_hal_uart.h (Verified-Telemetry-FreeRTOS-Sample\b-l475e-iot01a\_deps\stm32cubel4-src\Drivers\STM32L4xx_HAL_Driver\Inc\stm32l4xx_hal_uart.h)
 
-      * Add following lines under line 1617 in above file.
+      * Add following lines under line 1617 in above file, UART4 receiving function declaration.
           ```bash
             HAL_StatusTypeDef HAL_UART4_Receive(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size, uint32_t Timeout);
           ```
