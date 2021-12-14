@@ -50,7 +50,9 @@ Clone the following repo to download all sample device code, setup scripts, and 
 To clone the repo, run the following command:
 
 ```shell
-git clone --recursive https://github.com/Azure-Samples/Verified-Telemetry-FreeRTOS-Sample.git
+git clone https://github.com/Azure-Samples/Verified-Telemetry-FreeRTOS-Sample.git
+git checkout features/currentsense_updated
+git submodule update --init --recursive 
 ```
 
 ### Install the tools
@@ -137,7 +139,7 @@ To build the device image, navigate to the `Verified-Telemetry-FreeRTOS-Sample` 
   
 Following changes are required in library files.
 
-1. stm32l4s5i_iot01.c (Verified-Telemetry-FreeRTOS-Sample\b-l475e-iot01a\_deps\stm32cubel4-src\Drivers\BSP\B-L4S5I-IOT01\stm32l4s5i_iot01.c)
+1. stm32l475e_iot01.c (Verified-Telemetry-FreeRTOS-Sample\b-l475e-iot01a\_deps\stm32cubel4-src\Drivers\BSP\B-L475E-IOT01\stm32l475e_iot01.c)
 
       * Add following lines under line 82 in above file, values required for COM2 Port Initialization.
           ```bash
@@ -156,7 +158,7 @@ Following changes are required in library files.
             const uint16_t COM2_RX_AF[COMn] = {DISCOVERY_COM2_RX_AF};
           ```
 
-      * Add following lines under line 317 in above file after function BSP_COM_Init(), COM2 Port Initialization Function definition.
+      * Add following lines under line 317 in above file **after function BSP_COM_Init()**, COM2 Port Initialization Function definition.
           ```bash
             void BSP_COM2_Init(COM_TypeDef COM, UART_HandleTypeDef *huart)
             {
@@ -189,7 +191,7 @@ Following changes are required in library files.
             }
           ```
 
-2. stm32l4s5i_iot01.h (Verified-Telemetry-FreeRTOS-Sample\b-l475e-iot01a\_deps\stm32cubel4-src\Drivers\BSP\B-L4S5I-IOT01\stm32l4s5i_iot01.h)
+2. stm32l475e_iot01.h (Verified-Telemetry-FreeRTOS-Sample\b-l475e-iot01a\_deps\stm32cubel4-src\Drivers\BSP\B-L475E-IOT01\stm32l475e_iot01.h)
 
       * Add following lines under line 152 in above file, various defines for COM2 Port.
           ```bash
@@ -220,7 +222,7 @@ Following changes are required in library files.
             #define DISCOVERY_COMy_RX_GPIO_CLK_ENABLE(__INDEX__)    do { if((__INDEX__) == COM2) {DISCOVERY_COM2_RX_GPIO_CLK_ENABLE();}} while(0)
             #define DISCOVERY_COMy_RX_GPIO_CLK_DISABLE(__INDEX__)   do { if((__INDEX__) == COM2) {DISCOVERY_COM2_RX_GPIO_CLK_DISABLE();}} while(0)
           ```
-      * Add following lines under line 241 in above file after BSP_COM_Init() function declaration, COM2 function declaration.
+      * Add following lines under line 241 in above file **after function BSP_COM_Init()** declaration, COM2 function declaration.
           ```bash
             void             BSP_COM2_Init(COM_TypeDef COM, UART_HandleTypeDef *huart);
           ```
