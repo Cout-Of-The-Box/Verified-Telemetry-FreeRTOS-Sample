@@ -51,6 +51,7 @@ To clone the repo, run the following command:
 
 ```shell
 git clone https://github.com/Azure-Samples/Verified-Telemetry-FreeRTOS-Sample.git
+cd Verified-Telemetry-FreeRTOS-Sample
 git checkout features/currentsense_updated
 git submodule update --init --recursive 
 ```
