@@ -156,7 +156,7 @@ Following changes are required in library files.
             const uint16_t COM2_RX_AF[COMn] = {DISCOVERY_COM2_RX_AF};
           ```
 
-      * Add following lines under line 312 in above file, COM2 Port Initialization Function.
+      * Add following lines under line 317 in above file after function BSP_COM_Init(), COM2 Port Initialization Function definition.
           ```bash
             void BSP_COM2_Init(COM_TypeDef COM, UART_HandleTypeDef *huart)
             {
@@ -219,6 +219,10 @@ Following changes are required in library files.
 
             #define DISCOVERY_COMy_RX_GPIO_CLK_ENABLE(__INDEX__)    do { if((__INDEX__) == COM2) {DISCOVERY_COM2_RX_GPIO_CLK_ENABLE();}} while(0)
             #define DISCOVERY_COMy_RX_GPIO_CLK_DISABLE(__INDEX__)   do { if((__INDEX__) == COM2) {DISCOVERY_COM2_RX_GPIO_CLK_DISABLE();}} while(0)
+          ```
+      * Add following lines under line 241 in above file after BSP_COM_Init() function declaration, COM2 function declaration.
+          ```bash
+            void             BSP_COM2_Init(COM_TypeDef COM, UART_HandleTypeDef *huart);
           ```
 
 3. stm32l4xx_hal_uart.c (Verified-Telemetry-FreeRTOS-Sample\b-l475e-iot01a\_deps\stm32cubel4-src\Drivers\STM32L4xx_HAL_Driver\Src\stm32l4xx_hal_uart.c)
