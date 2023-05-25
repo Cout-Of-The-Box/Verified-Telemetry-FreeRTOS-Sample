@@ -422,7 +422,7 @@ static void callback_task(){
         //vTaskDelay(100);
         
         vTaskSuspend(TaskHandle_1);
-        vTaskDelay(200);
+        vTaskDelay(1000/portTICK_RATE_MS);
         
         // vTaskGetInfo(  TaskHandle_1, &xTaskDetails, pdTRUE, eInvalid );
         // printf("\nstatusb=%d\n",xTaskDetails.eCurrentState);
@@ -436,7 +436,7 @@ static void callback_task(){
         // printf("\n^^^^^^^^^^^^^^^^^^^^^^^\n");
 
         //ESP_ERROR_CHECK(mcp320x_release(mcp320x_handle));
-        ESP_ERROR_CHECK(mcp320x_free(mcp320x_handle));
+        // ESP_ERROR_CHECK(mcp320x_free(mcp320x_handle));
         stop_spi=false;
         //printf("\nspisptopped %d\n",stop_spi);
         vTaskSuspend(NULL);
@@ -587,8 +587,14 @@ mcp320x_cfg.clock_speed_hz = 312500 ;
     gpio_config(&io_conf);
 
 
-        ESP_ERROR_CHECK(mcp320x_initialize(&mcp320x_cfg, &mcp320x_handle));
-sema_v = xSemaphoreCreateBinary();
+    static bool init_done=false;
+
+    if(init_done==false){
+    ESP_ERROR_CHECK(mcp320x_initialize(&mcp320x_cfg, &mcp320x_handle));
+    init_done=true;
+    }
+    
+    sema_v = xSemaphoreCreateBinary();
 
 if(once_called==false){
        BaseType_t xReturned= xTaskCreate(read_task, "read", 2048, NULL, configMAX_PRIORITIES - 1, &TaskHandle_1);  

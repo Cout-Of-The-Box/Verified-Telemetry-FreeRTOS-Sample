@@ -51,6 +51,7 @@ list(APPEND COMPONENT_SOURCES
     ${VERIFIED_TELEMETRY}/src/core/currentsense/internal/vt_cs_sensor_status_compute
     ${VERIFIED_TELEMETRY}/src/core/currentsense/internal/vt_cs_raw_signature_read
     ${VERIFIED_TELEMETRY}/src/core/currentsense/internal/vt_cs_fft
+    ${VERIFIED_TELEMETRY}/src/core/currentsense/internal/kmeans1
     ${VERIFIED_TELEMETRY}/src/core/currentsense/internal/vt_cs_database_store
     ${VERIFIED_TELEMETRY}/src/core/currentsense/internal/vt_cs_database_reset
     ${VERIFIED_TELEMETRY}/src/core/currentsense/internal/vt_cs_database_fetch

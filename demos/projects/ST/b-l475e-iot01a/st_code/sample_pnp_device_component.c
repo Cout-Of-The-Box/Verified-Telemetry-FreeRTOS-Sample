@@ -376,7 +376,7 @@ VT_UINT getpmdata()
         //printf(" UART4_rxBuffer: %x\n", *UART4_rxBuffer);
     //if((*UART4_rxBuffer == 0x42) || (*UART4_rxBuffer == 0x52))
     //{
-        HAL_UART4_Receive (&UartHandle4, UART4_rxBuffer, UART_BUFFER_LENGTH, 2000);
+       // HAL_UART4_Receive (&UartHandle4, UART4_rxBuffer, UART_BUFFER_LENGTH, 2000);
         //HAL_UART_Transmit(&UartHandle4, UART4_rxBuffer, sizeof(UART4_rxBuffer), 1000);
         for (int j=0;j<UART_BUFFER_LENGTH;j++){
             printf("%x-", UART4_rxBuffer[j]);

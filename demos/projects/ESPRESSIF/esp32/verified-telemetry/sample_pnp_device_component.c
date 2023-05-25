@@ -7,7 +7,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include <stdlib.h>
-
+#include <math.h>
 #include "driver/gpio.h"
 #include "driver/adc.h"
 #include "esp_adc_cal.h"
@@ -184,6 +184,137 @@ void uart_deinit(){
     uart_driver_delete(UART_NUM_0);
 }
 
+
+VT_VOID sps30_start_measurement(){
+
+
+        for (int i =0;i <UART_BUFFER_LENGTH;i++){
+        UART4_rxBuffer[i]=0;
+    }
+
+
+
+
+    uint8_t UART4_txBuffer[]={0x7E,0x00,0x00,0x02,0x01,0x03,0xF9,0x7E};
+   
+
+   uart_write_bytes(UART_NUM_2, UART4_txBuffer, 8);
+    //HAL_UART_Transmit(&UartHandle4, (uint8_t*)UART4_txBuffer, sizeof(UART4_txBuffer), 1000);
+
+uart_read_bytes (UART_NUM_2, UART4_rxBuffer, UART_BUFFER_LENGTH, 3000/portTICK_RATE_MS);
+    //HAL_UART4_Receive (&UartHandle4, UART4_rxBuffer, UART_BUFFER_LENGTH, 3000);
+        // printf("sent start:\n");
+    
+        // for (int j=0;j<UART_BUFFER_LENGTH;j++){
+        //     printf("%x-", UART4_rxBuffer[j]);
+        // }
+
+    #if VT_LOG_LEVEL > 2
+    VTLogDebugNoTag("sent start\n");
+    VTLogDebugNoTag("received packet:\n");
+    
+        for (int j=0;j<UART_BUFFER_LENGTH;j++){
+            VTLogDebugNoTag("%x-", UART4_rxBuffer[j]);
+        }
+       VTLogDebugNoTag("\n");
+       #endif
+
+}
+
+VT_VOID sps30_stop_measurement(){
+
+        for (int i =0;i <UART_BUFFER_LENGTH;i++){
+        UART4_rxBuffer[i]=0;
+    }
+
+
+
+    uint8_t UART4_txBuffer[]={0x7E,0x00,0x01,0x00,0xFE,0x7E};
+
+    
+uart_write_bytes(UART_NUM_2, UART4_txBuffer, 6);
+    //HAL_UART_Transmit(&UartHandle4, UART4_txBuffer, sizeof(UART4_txBuffer), 1000);
+
+uart_read_bytes (UART_NUM_2, UART4_rxBuffer, UART_BUFFER_LENGTH, 3000/portTICK_RATE_MS);
+        //HAL_UART4_Receive (&UartHandle4, UART4_rxBuffer, UART_BUFFER_LENGTH, 3000);
+        //       printf("sent sotp:\n");
+    
+        // for (int j=0;j<UART_BUFFER_LENGTH;j++){
+        //     printf("%x-", UART4_rxBuffer[j]);
+        // }
+    #if VT_LOG_LEVEL > 2
+    VTLogDebugNoTag("sent stop\n");
+    VTLogDebugNoTag("received packet:\n");
+    
+        for (int j=0;j<UART_BUFFER_LENGTH;j++){
+            VTLogDebugNoTag("%x-", UART4_rxBuffer[j]);
+        }
+       VTLogDebugNoTag("\n");
+       #endif
+
+
+}
+float sps30_read_measurement(){
+        union {
+        char c[4];
+        float f;
+    } u;
+
+
+        for (int i =0;i <UART_BUFFER_LENGTH;i++){
+        UART4_rxBuffer[i]=0;
+    }
+
+
+
+    uint8_t UART4_txBuffer[]={0x7E,0x00,0x03,0x00,0xFC,0x7E};
+        VT_INT decimal;
+    VT_FLOAT frac_float;
+    VT_INT frac;
+
+    uart_write_bytes(UART_NUM_2, UART4_txBuffer, 6);
+    //HAL_UART_Transmit(&UartHandle4, UART4_txBuffer, sizeof(UART4_txBuffer), 1000);
+
+
+    uart_read_bytes (UART_NUM_2, UART4_rxBuffer, UART_BUFFER_LENGTH, 3000/portTICK_RATE_MS);
+        //HAL_UART4_Receive (&UartHandle4, UART4_rxBuffer, UART_BUFFER_LENGTH, 3000);
+              printf("sent read:\n");
+    
+        for (int j=0;j<UART_BUFFER_LENGTH;j++){
+            printf("%x-", UART4_rxBuffer[j]);
+        }
+
+    for (VT_UINT iter=0;iter<UART_BUFFER_LENGTH-31;iter++){
+            if (UART4_rxBuffer[iter]==0x7e){
+                if (UART4_rxBuffer[iter+1]==0x00){
+                        u.c[3] = UART4_rxBuffer[iter+9];
+                        u.c[2] = UART4_rxBuffer[iter+10];
+                        u.c[1] = UART4_rxBuffer[iter+11];
+                        u.c[0] = UART4_rxBuffer[iter+12];
+                        break;
+                }}}
+
+            decimal    = u.f;
+        frac_float = u.f - (VT_FLOAT)decimal;
+        frac       = fabsf(frac_float) * 10000;
+       printf("\npm2.5 val %d.%04d : \n", decimal, frac);
+
+    return u.f;
+    #if VT_LOG_LEVEL > 2
+    VTLogDebugNoTag("sent stop\n");
+    VTLogDebugNoTag("received packet:\n");
+    
+        for (int j=0;j<UART_BUFFER_LENGTH;j++){
+            VTLogDebugNoTag("%x-", UART4_rxBuffer[j]);
+        }
+       VTLogDebugNoTag("\n");
+       #endif
+
+
+}
+
+
+
 VT_UINT getpmdata()
 {
     uint16_t _checksum;
@@ -199,7 +330,7 @@ VT_UINT getpmdata()
         //printf(" UART4_rxBuffer: %x\n", *UART4_rxBuffer);
     //if((*UART4_rxBuffer == 0x42) || (*UART4_rxBuffer == 0x52))
     //{
-        uart_read_bytes (UART_NUM_2, UART4_rxBuffer, UART_BUFFER_LENGTH, 2000);
+        uart_read_bytes (UART_NUM_2, UART4_rxBuffer, UART_BUFFER_LENGTH, 2000/portTICK_RATE_MS);
         //HAL_UART_Transmit(&UartHandle4, UART4_rxBuffer, sizeof(UART4_rxBuffer), 1000);
         for (int j=0;j<UART_BUFFER_LENGTH;j++){
             printf("%x-", UART4_rxBuffer[j]);
@@ -257,6 +388,7 @@ UINT get_sensor_data(SAMPLE_PNP_DEVICE_COMPONENT* handle)
         io_conf.pull_down_en = 0;
         io_conf.pull_up_en = 0;
         gpio_config(&io_conf);
+        
 
         gpio_set_level(GPIO_NUM_18, 1);
         gpio_set_level(GPIO_NUM_19, 1);
@@ -279,7 +411,7 @@ UINT get_sensor_data(SAMPLE_PNP_DEVICE_COMPONENT* handle)
     //uart_init();
 
      printf("******* CS PART *******\n");
-
+ //sps30_start_measurement();
          FreeRTOS_vt_signature_read(handle->verified_telemetry_DB,
         (UCHAR*)telemetry_name_pmsExternal1Raw,
         sizeof(telemetry_name_pmsExternal1Raw) - 1,0);
@@ -289,7 +421,8 @@ UINT get_sensor_data(SAMPLE_PNP_DEVICE_COMPONENT* handle)
     //     i++;
     // }
 
-    getpmdata();
+        uint16_t pmdata=getpmdata();
+ //float pmdata = sps30_read_measurement();
 
 
     
@@ -299,7 +432,7 @@ UINT get_sensor_data(SAMPLE_PNP_DEVICE_COMPONENT* handle)
         (UCHAR*)telemetry_name_pmsExternal1Raw,
         sizeof(telemetry_name_pmsExternal1Raw) - 1);
 
-        
+        // sps30_stop_measurement();
     printf("\n******* CS PART END*******\n");
 
     //uart_deinit();
@@ -309,7 +442,7 @@ UINT get_sensor_data(SAMPLE_PNP_DEVICE_COMPONENT* handle)
     handle->sensorHumidity     = 0;
     handle->sensorAcceleration = 0;
     handle->sensorMagnetic     = 0;
-
+handle->pmsExternal1Raw = (double)pmdata;
     return (eAzureIoTSuccess);
 }
 

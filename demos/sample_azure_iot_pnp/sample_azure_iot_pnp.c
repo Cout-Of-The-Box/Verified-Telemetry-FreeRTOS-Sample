@@ -398,25 +398,6 @@ static void prvHandleCommand(AzureIoTHubClientCommandRequest_t* pxMessage, void*
             }
         }
 
-        else if ((strlen("retrainFingerprintTemplate") == pxMessage->usCommandNameLength) &&
-                 (strncmp("retrainFingerprintTemplate",
-                      (const char*)pxMessage->pucCommandName,
-                      strlen("retrainFingerprintTemplate")) == 0))
-        {
-            FreeRTOS_vt_process_command(verified_telemetry_DB,
-                xHandle,
-                (UCHAR*)pxMessage->pucComponentName,
-                pxMessage->usComponentNameLength,
-                (UCHAR*)pxMessage->pucCommandName,
-                pxMessage->usCommandNameLength,
-                0);
-
-            if (AzureIoTHubClient_SendCommandResponse(xHandle, pxMessage, 200, NULL, 0) != eAzureIoTSuccess)
-            {
-                LogError(("Error sending command response"));
-            }
-        }
-
         else
         {
             /* Not for max min report (not for this device) */
@@ -443,25 +424,6 @@ static void prvHandleCommand(AzureIoTHubClientCommandRequest_t* pxMessage, void*
             (strncmp("setResetFingerprintTemplate",
                  (const char*)pxMessage->pucCommandName,
                  strlen("setResetFingerprintTemplate")) == 0))
-        {
-            FreeRTOS_vt_process_command(verified_telemetry_DB,
-                xHandle,
-                (UCHAR*)pxMessage->pucComponentName,
-                pxMessage->usComponentNameLength,
-                (UCHAR*)pxMessage->pucCommandName,
-                pxMessage->usCommandNameLength,
-                0);
-
-            if (AzureIoTHubClient_SendCommandResponse(xHandle, pxMessage, 200, NULL, 0) != eAzureIoTSuccess)
-            {
-                LogError(("Error sending command response"));
-            }
-        }
-
-        else if ((strlen("retrainFingerprintTemplate") == pxMessage->usCommandNameLength) &&
-                 (strncmp("retrainFingerprintTemplate",
-                      (const char*)pxMessage->pucCommandName,
-                      strlen("retrainFingerprintTemplate")) == 0))
         {
             FreeRTOS_vt_process_command(verified_telemetry_DB,
                 xHandle,
@@ -518,25 +480,6 @@ static void prvHandleCommand(AzureIoTHubClientCommandRequest_t* pxMessage, void*
             }
         }
 
-        else if ((strlen("retrainFingerprintTemplate") == pxMessage->usCommandNameLength) &&
-                 (strncmp("retrainFingerprintTemplate",
-                      (const char*)pxMessage->pucCommandName,
-                      strlen("retrainFingerprintTemplate")) == 0))
-        {
-            FreeRTOS_vt_process_command(verified_telemetry_DB,
-                xHandle,
-                (UCHAR*)pxMessage->pucComponentName,
-                pxMessage->usComponentNameLength,
-                (UCHAR*)pxMessage->pucCommandName,
-                pxMessage->usCommandNameLength,
-                0);
-
-            if (AzureIoTHubClient_SendCommandResponse(xHandle, pxMessage, 200, NULL, 0) != eAzureIoTSuccess)
-            {
-                LogError(("Error sending command response"));
-            }
-        }
-
         else
         {
             /* Not for max min report (not for this device) */
@@ -563,25 +506,6 @@ static void prvHandleCommand(AzureIoTHubClientCommandRequest_t* pxMessage, void*
             (strncmp("setResetFingerprintTemplate",
                  (const char*)pxMessage->pucCommandName,
                  strlen("setResetFingerprintTemplate")) == 0))
-        {
-            FreeRTOS_vt_process_command(verified_telemetry_DB,
-                xHandle,
-                (UCHAR*)pxMessage->pucComponentName,
-                pxMessage->usComponentNameLength,
-                (UCHAR*)pxMessage->pucCommandName,
-                pxMessage->usCommandNameLength,
-                0);
-
-            if (AzureIoTHubClient_SendCommandResponse(xHandle, pxMessage, 200, NULL, 0) != eAzureIoTSuccess)
-            {
-                LogError(("Error sending command response"));
-            }
-        }
-
-        else if ((strlen("retrainFingerprintTemplate") == pxMessage->usCommandNameLength) &&
-                 (strncmp("retrainFingerprintTemplate",
-                      (const char*)pxMessage->pucCommandName,
-                      strlen("retrainFingerprintTemplate")) == 0))
         {
             FreeRTOS_vt_process_command(verified_telemetry_DB,
                 xHandle,

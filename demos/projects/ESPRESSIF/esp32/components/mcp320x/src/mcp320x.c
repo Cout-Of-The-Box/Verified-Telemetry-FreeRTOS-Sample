@@ -59,7 +59,11 @@ extern "C"
        
         ESP_ERROR_CHECK(spi_bus_add_device(config->host, &dev_cfg, &spi_device_handle));
 
-        mcp320x_handle_t dev = (mcp320x_t *)malloc(sizeof(mcp320x_t));
+        // mcp320x_handle_t dev = (mcp320x_t *)malloc(sizeof(mcp320x_t));
+
+        static mcp320x_t dev_var;
+        static mcp320x_handle_t dev=&dev_var;
+
         dev->spi_handle = spi_device_handle;
         dev->mcp_model = config->device_model;
         dev->millivolts_per_resolution_step = (float)config->reference_voltage / MCP320X_RESOLUTION;
@@ -72,9 +76,11 @@ extern "C"
     mcp320x_err_t mcp320x_free(mcp320x_handle_t handle)
     {
         MCP320X_CHECK((handle != NULL), "handle error(NULL)", MCP320X_ERR_INVALID_HANDLE);
+        spi_transaction_t * trans_desc_temp=NULL;
+        spi_device_get_trans_result(handle->spi_handle,&trans_desc_temp,2000/portTICK_RATE_MS);
         MCP320X_CHECK(spi_bus_remove_device(handle->spi_handle) == ESP_OK, "failed to remove device from bus", MCP320X_ERR_SPI_BUS);
 
-        free(handle);
+        // free(handle);
 
         return MCP320X_OK;
     }

@@ -115,7 +115,7 @@ xSemaphoreHandle xWifiSemaphoreHandle;
 /* Private variables ---------------------------------------------------------*/
 /* Use by the pseudo random number generator. */
 static UBaseType_t ulNextRand;
-static uint64_t ulGlobalEntryTime = 1673769600;
+static uint64_t ulGlobalEntryTime = 4114735131;
 
 /* Private function prototypes -----------------------------------------------*/
 
@@ -863,7 +863,7 @@ static void UART4_Console_Init(void)
     UartHandle4.Init.Mode                   = CFG_HW_UART4_MODE;
     UartHandle4.Init.HwFlowCtl              = CFG_HW_UART4_HWFLOWCTL;
     UartHandle4.AdvancedInit.AdvFeatureInit = CFG_HW_UART4_ADVFEATUREINIT;
-    BSP_COM2_Init(COM2, &UartHandle4);
+    //BSP_COM2_Init(COM2, &UartHandle4);
 }
 /*-----------------------------------------------------------*/
 
